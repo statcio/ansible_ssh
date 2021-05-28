@@ -39,7 +39,7 @@ create a key to connect to the instance (or use existing key in the root directo
 # Connect to Ansible Master Node using SSH
 1. Open an SSH client (terminal) 
 2. Locate your private key file (ansible_aut.pem)
-3. If it is needed run ``` chmod 400 ansible_aut.pem ```
+3. If it is needed run: ``` chmod 400 ansible_aut.pem ```
 4. Connect to your instance using its Public DNS (Example): 
 ``` 
 ssh -i "ansible_aut.pem" ec2-user@ec2-3-67-189-5.eu-central-1.compute.amazonaws.com 
@@ -50,21 +50,23 @@ Run: ``` sudo yum update ```
 
 # Prerequisite
 1. Python should be installed (Run to check: python --version)
-2. Install Ansible 
+2. Install Ansible: 
 ``` sudo amazon-linux-extras install ansible2 ```
 
 Run to check: ``` ansible --version ```
 
 # Setup a devops user on Master Node
-1. Create a user devops
+Create a user devops:
 
 ```sudo -i```
 
 ```useradd -m -s /bin/bash devops```
-2. Set a password
+
+Set a password:
 ```passwd devops```
-3. Add the user in sudoers.d file, this allow user to run any command 
-using sudo without passing their password
+
+Add the user in sudoers.d file, this allow user to run any command 
+using sudo without passing their password:
 ```
 echo -e 'devops\tALL=(ALL)\tNOPASSWD:\tALL' > /etc/sudoers.d/devops
 ```
@@ -72,10 +74,10 @@ echo -e 'devops\tALL=(ALL)\tNOPASSWD:\tALL' > /etc/sudoers.d/devops
 To check: ``` cat etc/sudoers.d/devops ```
 
 User devops has created successfully.
-Now we will generate the SSH keys for the devops user 
+Let's generate the SSH keys for the devops user 
 
 # Generate a SSH Key
-1. Login as a devops user and follow the prompts
+1. Login as a devops user and follow the prompts:
 
 ``` sudo -su devops ```
 
@@ -83,7 +85,7 @@ Now we will generate the SSH keys for the devops user
 
 By default both keys (id_rsa and id_rsa.pub) will store in /home/devops/.ssh/
 
-To reach them: 
+To check them: 
 ``` cd ~/.ssh ```
 
 ``` ls ``` 
@@ -136,15 +138,15 @@ PEM file need to have specific permission before you can use it directly.
 If the permission is not set properly you will see the error 
 “It is required that your private key files are NOT accessible by others. This private key will be ignored.”
 2. You need to update file: ```/inventories/dev/hosts``` according your private IP address of second AWS instance.  
-3. Change the permission of the pem file
+3. Change the permission of the pem file:
 ``` sudo chmod 600 ansible_aut.pem ```
-4. Run playbook
+4. Run playbook:
 ```
 ansible-playbook main.yml -i inventories/dev/hosts --user ec2-user --key-file /home/ec2-user/playbooks/ansible_aut.pem -e '@configs/dev.yml'
 
 ```
 
-Once you setup the devops user then you can use the devops key and run the playbook using devops user
+Once you setup the devops user then you can use the devops key and run the playbook using devops user:
 ``` 
 ansible-playbook main.yml -i inventories/dev/hosts --user devops --key-file /home/devops/.ssh/id_rsa -e '@configs/dev.yml'
 
